@@ -1,0 +1,21 @@
+{
+	"productName" : "ChilliSource Mobile Logging",
+	"projectName" : "ChilliSource.Mobile.Logging",
+	"githubOwner": "BlueChilli",
+	"githubRepository": "ChilliSource.Mobile.Logging",
+	"packageWhiteList": ["ChilliSource.Mobile.Logging"],
+	"solutionFile" : "../src/ChilliSource.Mobile.Logging.sln",
+	"tags": [ "ChilliSource", "ChilliSource Mobile Logging"],
+	"authors" : ["Blue Chilli Technology Pty Ltd"],
+	"copyright" : "Copyright Blue Chilli Technology Pty Ltd 2017",
+	"iconUrl": "https://avatars0.githubusercontent.com/u/5924219?v=3&s=200",
+	"testProjectPath": "../src/ChilliSource.Mobile.Logging.Tests/ChilliSource.Mobile.Logging.Tests.csproj",
+	"runTests" : false,
+	"iosTestAppPath": "../src/ChilliSource.Mobile.Logging.Tests.iOS/bin/iPhoneSimulator/Release/ChilliSource.Mobile.Tests.app",
+	"androidTestAppPath":"../src/ChilliSource.Mobile.Logging.Tests.Droid/ChilliSource.Mobile.Logging.Tests.Droid.csproj",
+	"nuspecRootPath" : "../src/",
+	"testAppBundleId": "com.bluechilli.chillisource.mobile.tests",
+	"simulatorRuntimes": ["iOS 10.3", "iOS 10.2"],
+	"simulatorDevice" : "iPhone 6s",
+	"artifactDirectory" : "../build/artifacts"
+}
