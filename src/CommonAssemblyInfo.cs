@@ -8,6 +8,6 @@ using System.Reflection;
 [assembly: AssemblyProduct("ChilliSource Mobile Logging")]
 [assembly: AssemblyVersion("1.0.0")]
 [assembly: AssemblyFileVersion("1.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0-alpha.0+Branch.develop.Sha.c0df7d8ae63b7beaf0c43ba76c53e0fc9eed3cf9")]
+[assembly: AssemblyInformationalVersion("1.0.0-alpha.3+Branch.develop.Sha.66a2bedf83f0a8dbbf5f847c06580afbbdc889d5")]
 [assembly: AssemblyCopyright("Copyright Blue Chilli Technology Pty Ltd 2017")]
 

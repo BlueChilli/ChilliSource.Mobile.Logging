@@ -16,7 +16,20 @@
     <dependencies>
 	  <group>
         <dependency id="Mindscape.Raygun4Net" version="5.4.0" />       
-        <dependency id="Serilog" version="1.5.14" />      
+        <dependency id="Serilog" version="2.4.0" />
+        <dependency id="Serilog.Sinks.Console" version="2.1.0" />
+        <dependency id="Microsoft.CSharp" version="4.3.0" />
+        <dependency id="System.Collections" version="4.3.0" />
+        <dependency id="System.Collections.NonGeneric" version="4.3.0" />
+        <dependency id="System.Dynamic.Runtime" version="4.3.0"  />
+        <dependency id="System.Globalization" version="4.3.0"/>
+        <dependency id="System.Linq" version="4.3.0" />
+        <dependency id="System.Reflection" version="4.3.0"/>
+        <dependency id="System.Reflection.Extensions" version="4.3.0"/>
+        <dependency id="System.Runtime" version="4.3.0" />
+        <dependency id="System.Runtime.Extensions" version="4.3.0" />
+        <dependency id="System.Text.RegularExpressions" version="4.3.0" />
+        <dependency id="System.Threading" version="4.3.0"/>  
       </group>
     </dependencies>
   </metadata>
