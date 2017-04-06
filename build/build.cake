@@ -123,7 +123,8 @@ var packageWhitelist = config.Value<JArray>("packageWhiteList").Values<string>()
 var buildSolution = config.Value<string>("solutionFile");
 var simulatorRuntimes = config.Value<JArray>("simulatorRuntimes").Values<string>();
 var simulatorDevice = config.Value<string>("simulatorDevice");
-var runTests = config.Value<bool>("runTests");
+var runUnitTests = config.Value<bool>("runUnitTests");
+var runSimulatorTests = config.Value<bool>("runSimulatorTests");
 
 // Macros
 
@@ -528,17 +529,17 @@ Task("RestorePackages")
 });
 
 
-var testProject = config.Value<string>("testProjectPath");
+var testProjectDll = config.Value<string>("testProjectDll");
 Task("RunUnitTests")
     .IsDependentOn("RestorePackages")
     .IsDependentOn("Build")
-    .WithCriteria(() => runTests)
+    .WithCriteria(() => runUnitTests)
     .Does(() =>
 {
 	Information("Running Unit Tests for {0}", buildSolution);
 	using(BuildBlock("RunUnitTests")) 
 	{
-		XUnit2(testProject, new XUnit2Settings {
+		XUnit2(testProjectDll, new XUnit2Settings {
 			OutputDirectory = artifactDirectory,
             XmlReportV1 = false,
             NoAppDomain = true
@@ -551,7 +552,7 @@ Task("RunSimulatorUnitTests")
    .IsDependentOn("RestorePackages")
    .IsDependentOn("Build")
    .IsDependentOn("RunUnitTests")
-   .WithCriteria(() => runTests)
+   .WithCriteria(() => runSimulatorTests)
   .Does (() =>
 {
 	// this should be running on MacOS
