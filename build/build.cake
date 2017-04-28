@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 #addin "Cake.AppleSimulator"
 #addin "Cake.Android.Adb"
 #addin "Cake.Xamarin"
+#addin "nuget:?package=Catel.Core&version=4.5.3"
 //////////////////////////////////////////////////////////////////////
 // TOOLS
 //////////////////////////////////////////////////////////////////////
@@ -372,56 +373,37 @@ Action<string,string> build = (solution, configuration) =>
     Information("Building {0}", solution);
 	using(BuildBlock("Build")) 
 	{			
-        if(isRunningOnUnix) {
-        	
-			XBuild(solution, settings => {
-				settings
-				.SetConfiguration(configuration)
-				.WithProperty("NoWarn", "1591") // ignore missing XML doc warnings
-				.WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
-				.SetVerbosity(Verbosity.Minimal);
+    	// UWP (project.json) needs to be restored before it will build.
+		RestorePackages(solution);
 
-				var msBuildLogger = GetMSBuildLoggerArguments();
+    	MSBuild(solution, settings => {
+			settings
+			.SetConfiguration(configuration)
+			.WithProperty("NoWarn", "1591") // ignore missing XML doc warnings
+			.WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
+			.SetVerbosity(Verbosity.Minimal)
+			.SetNodeReuse(false);
 
-				if(!string.IsNullOrEmpty(msBuildLogger)) 
-				{
-					settings.ArgumentCustomization = arguments => arguments.Append(string.Format(" /logger:{0}", msBuildLogger));
-				}
-			});
-        }
-        else {
+			settings.ToolVersion = MSBuildToolVersion.VS2015;
+		
+			var msBuildLogger = GetMSBuildLoggerArguments();
+		
+			if(!string.IsNullOrEmpty(msBuildLogger)) 
+			{
+				Information("Using custom MSBuild logger: {0}", msBuildLogger);
+				settings.ArgumentCustomization = arguments =>
+				arguments.Append(string.Format("/logger:{0}", msBuildLogger));
+			}
+		});
 
-        	// UWP (project.json) needs to be restored before it will build.
-  			RestorePackages(solution);
-
-        	MSBuild(solution, settings => {
-				settings
-				.SetConfiguration(configuration)
-				.WithProperty("NoWarn", "1591") // ignore missing XML doc warnings
-				.WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
-				.SetVerbosity(Verbosity.Minimal)
-				.SetNodeReuse(false);
-
-				settings.ToolVersion = MSBuildToolVersion.VS2015;
-			
-				var msBuildLogger = GetMSBuildLoggerArguments();
-			
-				if(!string.IsNullOrEmpty(msBuildLogger)) 
-				{
-					Information("Using custom MSBuild logger: {0}", msBuildLogger);
-					settings.ArgumentCustomization = arguments =>
-					arguments.Append(string.Format("/logger:{0}", msBuildLogger));
-				}
-			});
-
+		if(isRunningOnWindows) 
+		{
 			// seems like it doesn't work for ios
 			using(Block("SourceLink")) 
 			{
 			    SourceLink(solution);
 			};
-        }
-
-		
+		}		
     };		
 
 };
