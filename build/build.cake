@@ -186,7 +186,7 @@ Action<string,string> build = (solution, configuration) =>
 			.SetConfiguration(configuration);
 
 			settings.ToolPath = msBuildPath;
-				
+
 			if(isRunningOnUnix) 
 			{
 				settings.WithTarget("restore");
@@ -197,6 +197,7 @@ Action<string,string> build = (solution, configuration) =>
 			}
 
 			settings
+			.WithProperty("SourceLinkEnabled",  isCI)
 			.WithProperty("PackageOutputPath",  MakeAbsolute(Directory(artifactDirectory)).ToString())
 			.WithProperty("NoWarn", "1591") // ignore missing XML doc warnings
 			.WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
