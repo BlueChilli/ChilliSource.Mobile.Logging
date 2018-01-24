@@ -17,4 +17,6 @@ Packages
 TestResult.xml
 build/artifacts/
 build/tools/
+!build/tools/packages.config
 *.orig
+.vs
