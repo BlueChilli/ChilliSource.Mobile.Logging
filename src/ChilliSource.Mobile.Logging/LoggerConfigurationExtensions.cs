@@ -25,7 +25,7 @@ namespace ChilliSource.Mobile.Logging
     /// </summary>
     public static class LoggerConfigurationExtensions
     {
-        const string DefaultNSLogOutputTemplate = "[{Level}] {Message:l}{NewLine:l}{Exception:l}";
+        const string DefaultLogOutputTemplate = "[{Level}] {Message:l}{NewLine:l}{Exception:l}";
 
 
 		/// <summary>
@@ -53,7 +53,7 @@ namespace ChilliSource.Mobile.Logging
 
         public static LoggerConfiguration Diagnostics(this LoggerSinkConfiguration sinkConfiguration,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-            string outputTemplate = DefaultNSLogOutputTemplate,
+            string outputTemplate = DefaultLogOutputTemplate,
             IFormatProvider formatProvider = null)
         {
 
