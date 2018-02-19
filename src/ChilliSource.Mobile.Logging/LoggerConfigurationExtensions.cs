@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using System.Text;
 using ChilliSource.Mobile.Core;
 using Serilog;
+using Serilog.Configuration;
+using Serilog.Events;
+using Serilog.Formatting.Display;
 
 
 namespace ChilliSource.Mobile.Logging
@@ -22,6 +25,9 @@ namespace ChilliSource.Mobile.Logging
     /// </summary>
     public static class LoggerConfigurationExtensions
     {
+        const string DefaultLogOutputTemplate = "[{Level}] {Message:l}{NewLine:l}{Exception:l}";
+
+
 		/// <summary>
 		/// Returns the specified <paramref name="configuration"/> enriched with app information from <paramref name="information"/>
 		/// </summary>
@@ -43,6 +49,26 @@ namespace ChilliSource.Mobile.Logging
         {
             configuration.CreateLogger().Register();
             return new LoggerProxy();
+        }
+
+        public static LoggerConfiguration Diagnostics(this LoggerSinkConfiguration sinkConfiguration,
+            LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+            string outputTemplate = DefaultLogOutputTemplate,
+            IFormatProvider formatProvider = null)
+        {
+
+            if (sinkConfiguration == null)
+            {
+                throw new ArgumentNullException(nameof(sinkConfiguration));
+            }
+
+            if (outputTemplate == null)
+            {
+                throw new ArgumentNullException(nameof(outputTemplate));
+            }
+
+            var formatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
+            return sinkConfiguration.Sink(new DiagnosticsSink(formatter), restrictedToMinimumLevel);
         }
     }
 }

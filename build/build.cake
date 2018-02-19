@@ -5,8 +5,6 @@ using System.Text.RegularExpressions;
 // ADDINS
 //////////////////////////////////////////////////////////////////////
 
-#addin "Cake.FileHelpers"
-#addin "Cake.Xamarin"
 #addin nuget:?package=Newtonsoft.Json
 //////////////////////////////////////////////////////////////////////
 // TOOLS
@@ -85,10 +83,10 @@ var isRunningOnUnix = IsRunningOnUnix();
 var isRunningOnWindows = IsRunningOnWindows();
 var teamCity = BuildSystem.TeamCity;
 var branch = EnvironmentVariable("Git_Branch");
-var isPullRequest = !String.IsNullOrEmpty(branch) && branch.ToUpper().Contains("PULL-REQUEST"); //teamCity.Environment.PullRequest.IsPullRequest;
+var isPullRequest = !String.IsNullOrEmpty(branch) && branch.ToLower().Contains("refs/pull"); //teamCity.Environment.PullRequest.IsPullRequest;
 var projectName =  EnvironmentVariable("TEAMCITY_PROJECT_NAME"); //  teamCity.Environment.Project.Name;
 var isRepository = StringComparer.OrdinalIgnoreCase.Equals(productName, projectName);
-var isTagged = !String.IsNullOrEmpty(branch) && branch.ToUpper().Contains("TAGS");
+var isTagged = !String.IsNullOrEmpty(branch) && branch.ToLower().Contains("refs/tags");
 var buildConfName = EnvironmentVariable("TEAMCITY_BUILDCONF_NAME"); //teamCity.Environment.Build.BuildConfName
 var buildNumber = GetEnvironmentInteger("BUILD_NUMBER");
 var isReleaseBranch = StringComparer.OrdinalIgnoreCase.Equals("master", buildConfName)|| StringComparer.OrdinalIgnoreCase.Equals("release", buildConfName);
@@ -110,12 +108,32 @@ var githubUrl = string.Format("https://github.com/{0}/{1}", githubOwner, githubR
 var licenceUrl = string.Format("{0}/blob/master/LICENSE", githubUrl);
 
 // Version
-var gitVersion = GitVersion();
-var majorMinorPatch = gitVersion.MajorMinorPatch;
-var semVersion = gitVersion.SemVer;
-var informationalVersion = gitVersion.InformationalVersion;
-var nugetVersion = gitVersion.NuGetVersion;
-var buildVersion = gitVersion.FullBuildMetaData;
+string majorMinorPatch;
+string semVersion;
+string informationalVersion ;
+string nugetVersion;
+string buildVersion;
+
+Action SetGitVersionData = () => {
+
+	if(!isPullRequest) {
+		var gitVersion = GitVersion();
+		majorMinorPatch = gitVersion.MajorMinorPatch;
+		semVersion = gitVersion.SemVer;
+		informationalVersion = gitVersion.InformationalVersion;
+		nugetVersion = gitVersion.NuGetVersion;
+		buildVersion = gitVersion.FullBuildMetaData;
+	}
+	else {
+		majorMinorPatch = "1.0.0";
+		semVersion = "0";
+		informationalVersion ="1.0.0";
+		nugetVersion = "1.0.0";
+		buildVersion = "alpha";
+	}
+};
+
+SetGitVersionData();
 var copyright = config.Value<string>("copyright");
 var authors = config.Value<JArray>("authors").Values<string>().ToList();
 var iconUrl = config.Value<string>("iconUrl");
@@ -179,23 +197,22 @@ Action<string,string> build = (solution, configuration) =>
     Information("Building {0}", solution);
 	using(BuildBlock("Build")) 
 	{			
-  		FilePath msBuildPath = VSWhereLatest().CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
+  		FilePath msBuildPath = null;
+
+		if(isRunningOnWindows) {
+			msBuildPath =  VSWhereLatest().CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
+		}
 
     	MSBuild(solution, settings => {
 			settings
 			.SetConfiguration(configuration);
 
-			settings.ToolPath = msBuildPath;
-
-			if(isRunningOnUnix) 
-			{
-				settings.WithTarget("restore");
-			}
-			else 
-			{
-				settings.WithTarget("restore;pack");
+			if(isRunningOnWindows) {
+				settings.ToolPath = msBuildPath;
 			}
 
+			settings.WithTarget("restore;pack");
+	
 			settings
 			.WithProperty("SourceLinkEnabled",  isCI)
 			.WithProperty("PackageOutputPath",  MakeAbsolute(Directory(artifactDirectory)).ToString())
@@ -251,7 +268,14 @@ Setup((context) =>
              Information("Not running on TeamCity");
         }
 
-         CleanDirectories(artifactDirectory);
+        DeleteFiles("../src/**/*.tmp");
+		DeleteFiles("../src/**/*.tmp.*");
+
+		CleanDirectories(GetDirectories("../src/**/obj"));
+		CleanDirectories(GetDirectories("../src/**/bin"));
+		DeleteDirectories(GetDirectories("../src/**/obj"));
+		DeleteDirectories(GetDirectories("../src/**/bin"));	
+		CleanDirectory(Directory(artifactDirectory));	
 });
 
 Teardown((context) =>

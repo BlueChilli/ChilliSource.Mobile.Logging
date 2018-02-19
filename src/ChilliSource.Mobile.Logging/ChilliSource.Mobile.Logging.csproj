@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6;Xamarin.iOS10;MonoAndroid60;net462</TargetFrameworks>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <TargetFrameworks>netstandard2.0;Xamarin.iOS10;MonoAndroid70;net462</TargetFrameworks>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <PackageId>ChilliSource.Mobile.Logging</PackageId>    
     <Description>Logging Library for ChilliSource.Mobile framework</Description>
     <RepositoryUrl>https://github.com/BlueChilli/ChilliSource.Mobile.Logging</RepositoryUrl>
@@ -12,15 +12,15 @@
     <SourceLinkUrl>https://github.com/BlueChilli/ChilliSource.Mobile.Logging/</SourceLinkUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|netstandard1.6|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard1.6\ChilliSource.Mobile.Logging.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\ChilliSource.Mobile.Logging.xml</DocumentationFile>
     <NoWarn></NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Xamarin.iOS10|AnyCPU'">
     <DocumentationFile>bin\Release\Xamarin.iOS10\ChilliSource.Mobile.Logging.xml</DocumentationFile>
     <NoWarn></NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|MonoAndroid60|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|MonoAndroid70|AnyCPU'">
     <DocumentationFile>bin\Release\MonoAndroid60\ChilliSource.Mobile.Logging.xml</DocumentationFile>
     <NoWarn></NoWarn>
   </PropertyGroup>
@@ -38,12 +38,12 @@
     <Compile Include="Sinks\Raygun\**\*.cs" />
     <PackageReference Include="Mindscape.Raygun4Net" Version="5.4.1" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid60'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid70'">
     <Compile Include="Sinks\Raygun\**\*.cs" />
     <PackageReference Include="Mindscape.Raygun4Net" Version="5.4.1" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ChilliSource.Mobile.Core" Version="1.0.1" />
+    <PackageReference Include="ChilliSource.Mobile.Core" Version="2.0.0" />
     <PackageReference Include="Serilog" Version="2.4.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="2.1.0" />
   </ItemGroup>
