@@ -39,7 +39,6 @@
   <ItemGroup Condition=" $(TargetFramework.StartsWith('xamarinios')) ">
     <Compile Include="Sinks\Raygun\**\*.cs" />
     <PackageReference Include="Mindscape.Raygun4Net" Version="5.4.1" />
-    <PackageReference Remove="MSBuild.Sdk.Extras" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('monoandroid')) ">
     <Compile Include="Sinks\Raygun\**\*.cs" />
